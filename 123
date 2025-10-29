@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hair Transplant Cost Calculator – India</title>
+
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Poppins", Arial, sans-serif;
+    background: linear-gradient(180deg, #eaf5ff, #f7fafc, #ffffff);
+    margin: 0;
+    padding: 0;
+  }
+
+  #htc {
+    background: #ffffff;
+    padding: 32px;
+    border-radius: 18px;
+    max-width: 1200px;
+    width: 95%;
+    margin: 40px auto;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+  }
+
+  h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: #1e363a;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  p.sub {
+    text-align: center;
+    color: #555;
+    margin-bottom: 25px;
+    font-size: 1rem;
+  }
+
+  /* ---------- GRADE SECTION (moved before inputs) ---------- */
+  #gradeSection {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  #gradeSection h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1e363a;
+    margin-bottom: 12px;
+  }
+  #gradePreview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  #gradePreview img {
+    width: 90px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  #gradePreview img.active {
+    border: 2px solid #2b79ff;
+    box-shadow: 0 0 12px rgba(43,121,255,0.4);
+    transform: scale(1.05);
+  }
+  #graftRange {
+    display: block;
+    color: #2b79ff;
+    margin-top: 8px;
+    font-weight: 600;
+  }
+
+  /* ---------- FORM GRID ---------- */
+  .form-flex {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .form-group {
+    background: #f9fcff;
+    border: 1px solid #dce8f5;
+    border-radius: 12px;
+    padding: 14px 16px;
+    transition: 0.3s;
+  }
+  .form-group:hover { box-shadow: 0 0 8px rgba(0,0,0,0.05); }
+
+  label {
+    display: block;
+    font-weight: 600;
+    color: #2b3d3f;
+    margin-bottom: 6px;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #bcd5f2;
+    border-radius: 8px;
+    font-size: 15px;
+    background: #f7fbff;
+    color: #1e363a;
+    transition: border-color 0.3s;
+  }
+  input:focus, select:focus {
+    border-color: #2b79ff;
+    outline: none;
+    background: #fff;
+  }
+
+  /* ---------- BUTTON (Animated) ---------- */
+  #calculateBtn {
+    background: #142c5c;
+    color: white;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 22px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  #calculateBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(20,44,92,0.3);
+  }
+  #calculateBtn::after {
+    content: "";
+    position: absolute;
+    left: -50%;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background: rgba(255,255,255,0.15);
+    transform: skewX(-20deg);
+    transition: left 0.5s ease;
+  }
+  #calculateBtn:hover::after {
+    left: 120%;
+  }
+
+  /* ---------- TRUST BANNER ---------- */
+  #trustBanner {
+    text-align: center;
+    margin-top: 18px;
+    font-weight: 600;
+    color: #0f2d4a;
+    background: linear-gradient(90deg, #e8f1ff, #f6fbff);
+    border-radius: 12px;
+    padding: 12px 10px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    border: 1px solid #c9defb;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  }
+
+  /* ---------- RESULT SECTION ---------- */
+  #result {
+    margin-top: 40px;
+    display: none;
+    animation: fadeIn 0.6s ease;
+    text-align: center;
+    background: #f0f6ff;
+    padding: 25px;
+    border-radius: 14px;
+  }
+  #result h3 {
+    color: #142c5c;
+    margin-top: 0;
+    font-size: 1.4rem;
+  }
+  #result p {
+    color: #333;
+    font-size: 15px;
+    margin: 6px 0;
+  }
+  #beforeAfter {
+    margin-top: 20px;
+  }
+  #beforeAfter img {
+    width: 85%;
+    max-width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+
+<body>
+<div id="htc">
+  <h2>💇‍♂️ Hair Transplant Cost Calculator – India</h2>
+  <p class="sub">Estimate your grafts & cost in seconds 🧮</p>
+
+  <!-- Moved Baldness Grade Section -->
+  <div id="gradeSection">
+    <h3>🧑‍🦲 Select Your Baldness Grade</h3>
+    <div id="gradePreview">
+      <img src="https://hairfreehairgrow.com/wp-content/uploads/2025/03/grade-1.webp" data-grade="1" alt="Grade 1">
+      <img src="https://hairfreehairgrow.com/wp-content/uploads/2025/03/Grade-2.webp" data-grade="2" alt="Grade 2">
+      <img src="https://hairfreehairgrow.com/wp-content/uploads/2025/03/Grade-3.webp" data-grade="3" alt="Grade 3">
+      <img src="https://hairfreehairgrow.com/wp-content/uploads/2025/03/Grade-4.webp" data-grade="4" alt="Grade 4">
+      <img src="https://hairfreehairgrow.com/wp-content/uploads/2025/03/Grade-5.webp" data-grade="5" alt="Grade 5">
+      <img src="https://hairfreehairgrow.com/wp-content/uploads/2025/03/Grade-6.webp" data-grade="6" alt="Grade 6">
+      <img src="https://hairfreehairgrow.com/wp-content/uploads/2025/03/grade-7.webp" data-grade="7" alt="Grade 7">
+    </div>
+    <small id="graftRange"></small>
+  </div>
+
+  <div class="form-flex">
+    <div class="form-group">
+      <label>👤 Your Name</label>
+      <input type="text" id="username" placeholder="Enter your name">
+    </div>
+
+    <div class="form-group">
+      <label>📍 Enter City</label>
+      <input type="text" id="city" placeholder="Select your city" list="cityList">
+      <datalist id="cityList">
+        <option value="Surat"></option>
+        <option value="Pune (Pimple Gurav)"></option>
+        <option value="Pune (Kharadi)"></option>
+        <option value="Hyderabad"></option>
+        <option value="Ahmedabad"></option>
+        <option value="Kolkata"></option>
+        <option value="Bangalore"></option>
+        <option value="Bhopal"></option>
+        <option value="Delhi (Gurugram)"></option>
+        <option value="Nagpur"></option>
+        <option value="Mumbai"></option>
+        <option value="Vapi (Silvassa)"></option>
+        <option value="Vizag"></option>
+      </datalist>
+    </div>
+
+    <div class="form-group">
+      <label>⚙️ Select Technique</label>
+      <select id="technique">
+        <option value="35">Sapphire FUE</option>
+        <option value="30">IMPLANTER FUE</option>
+        <option value="45">BIG-FUE</option>
+        <option value="25">BIO-FUE Technique</option>
+        <option value="70">DHI</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>💉 Enter Grafts Required</label>
+      <input type="number" id="grafts" placeholder="e.g. 2000">
+    </div>
+
+    <div class="form-group">
+      <label>📞 Phone Number</label>
+      <input type="tel" id="phone" placeholder="Enter phone number" required pattern="[0-9]{10}" maxlength="10">
+    </div>
+
+    <div class="form-group">
+      <label>✉️ Email Address</label>
+      <input type="email" id="email" placeholder="Enter email">
+    </div>
+  </div>
+
+  <button id="calculateBtn" onclick="calculateCost()">Calculate 💰</button>
+
+  <!-- TRUST BANNER -->
+  <div id="trustBanner">
+    ✅ 14+ Years Experience | 🏥 13 Global Centers<br>
+    👨‍⚕️ 30+ Expert Doctors | 💯 1,00,000+ Happy Clients | ✂️ 21K+ Surgeries<br>
+    🌟 5,540+ Reviews | 🌍 Global Leader in Hair Restoration Since 2012
+  </div>
+
+  <div id="result">
+    <h3><span id="greeting"></span> Your Estimated Package: ₹<span id="total"></span></h3>
+    <p><strong>City:</strong> <span id="cityDisplay"></span></p>
+    <p><strong>Technique:</strong> <span id="techniqueDisplay"></span></p>
+    <p><strong>Baldness Grade:</strong> <span id="gradeDisplay"></span></p>
+    <p><strong>Market Price Comparison:</strong> ₹<span id="marketPriceRange"></span></p>
+    <div id="beforeAfter"></div>
+  </div>
+</div>
+
+<script>
+const gradeData = {
+  1: { range: "1000–1200", grafts: 1100, img: "https://hairfreehairgrow.com/wp-content/uploads/2025/03/02.webp" },
+  2: { range: "1200–1500", grafts: 1350, img: "https://hairfreehairgrow.com/wp-content/uploads/2025/03/01-2.webp" },
+  3: { range: "1500–2200", grafts: 1850, img: "https://hairfreehairgrow.com/wp-content/uploads/2025/03/02-4.webp" },
+  4: { range: "2200–2800", grafts: 2500, img: "https://hairfreehairgrow.com/wp-content/uploads/2025/03/02-6.webp" },
+  5: { range: "2800–3500", grafts: 3150, img: "https://hairfreehairgrow.com/wp-content/uploads/2025/03/01-8.webp" },
+  6: { range: "3500–4500", grafts: 4000, img: "https://hairfreehairgrow.com/wp-content/uploads/2025/03/02-11.webp" },
+  7: { range: "4500–6000", grafts: 5250, img: "https://hairfreehairgrow.com/wp-content/uploads/2025/03/01-13.webp" }
+};
+
+document.querySelectorAll("#gradePreview img").forEach(img => {
+  img.addEventListener("click", function() {
+    document.querySelectorAll("#gradePreview img").forEach(i => i.classList.remove("active"));
+    this.classList.add("active");
+    const grade = this.dataset.grade;
+    const data = gradeData[grade];
+    document.getElementById("grafts").value = data.grafts;
+    document.getElementById("graftRange").innerText = "💡 Suggested Graft Range: " + data.range;
+    document.getElementById("gradePreview").dataset.selected = grade;
+  });
+});
+
+document.querySelectorAll("input, select").forEach(el => {
+  el.addEventListener("input", () => {
+    document.getElementById("result").style.display = "none";
+    document.getElementById("calculateBtn").innerText = "Calculate 💰";
+  });
+});
+
+function calculateCost() {
+  const name = document.getElementById("username").value.trim();
+  const city = document.getElementById("city").value.trim();
+  const grafts = parseInt(document.getElementById("grafts").value);
+  const rate = parseInt(document.getElementById("technique").value);
+  const phone = document.getElementById("phone").value.trim();
+  const grade = document.getElementById("gradePreview").dataset.selected;
+
+  if (!/^[0-9]{10}$/.test(phone)) {
+    alert("📞 Please enter a valid 10-digit phone number.");
+    return;
+  }
+  if (!grafts || grafts <= 0) {
+    alert("💡 Please enter grafts or select a baldness grade first.");
+    return;
+  }
+
+  const total = grafts * rate;
+  const minMarket = total - 10000;
+  const maxMarket = total + 40000;
+
+  document.getElementById("greeting").innerText = name ? `Hi ${name},` : "Hi 👋";
+  document.getElementById("total").innerText = total.toLocaleString();
+  document.getElementById("marketPriceRange").innerText = `${minMarket.toLocaleString()} – ${maxMarket.toLocaleString()}`;
+  document.getElementById("techniqueDisplay").innerText = document.getElementById("technique").selectedOptions[0].text;
+  document.getElementById("cityDisplay").innerText = city || "—";
+  document.getElementById("gradeDisplay").innerText = grade ? "Grade " + grade : "Not Selected";
+
+  const beforeAfter = document.getElementById("beforeAfter");
+  if (grade) {
+    beforeAfter.innerHTML = `<h4>🎯 Before & After Result (Grade ${grade})</h4>
+    <img src="${gradeData[grade].img}" alt="Grade ${grade} result">`;
+  } else {
+    beforeAfter.innerHTML = "";
+  }
+
+  document.getElementById("result").style.display = "block";
+  document.getElementById("result").scrollIntoView({ behavior: "smooth" });
+
+  document.getElementById("calculateBtn").innerText = "Recalculate 🔄";
+
+  const email = document.getElementById("email").value.trim();
+  const lead = { name, city, phone, email, grade, grafts, rate, total };
+  console.log("Lead Sent to CRM:", lead);
+}
+</script>
+</body>
+</html>
