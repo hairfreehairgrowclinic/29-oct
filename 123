@@ -63,11 +63,23 @@
     border: 2px solid transparent;
     cursor: pointer;
     transition: all 0.3s ease;
+    position: relative;
   }
   #gradePreview img.active {
     border: 2px solid #2b79ff;
     box-shadow: 0 0 12px rgba(43,121,255,0.4);
     transform: scale(1.05);
+  }
+  #gradePreview img.active::after {
+    content: "✔";
+    position: absolute;
+    top: 5px;
+    right: 6px;
+    background: #2b79ff;
+    color: #fff;
+    font-size: 0.7rem;
+    padding: 3px 5px;
+    border-radius: 50%;
   }
   #graftRange {
     display: block;
@@ -115,7 +127,7 @@
     background: #fff;
   }
 
-  /* ---------- BUTTON (Animated) ---------- */
+  /* ---------- BUTTON ---------- */
   #calculateBtn {
     background: #142c5c;
     color: white;
@@ -146,8 +158,14 @@
     transform: skewX(-20deg);
     transition: left 0.5s ease;
   }
-  #calculateBtn:hover::after {
-    left: 120%;
+  #calculateBtn:hover::after { left: 120%; }
+
+  @media (max-width: 600px) {
+    #calculateBtn {
+      position: sticky;
+      bottom: 10px;
+      z-index: 100;
+    }
   }
 
   /* ---------- TRUST BANNER ---------- */
@@ -171,7 +189,8 @@
     display: none;
     animation: fadeIn 0.6s ease;
     text-align: center;
-    background: #f0f6ff;
+    background: #eaf3ff;
+    border: 1px solid #cde0ff;
     padding: 25px;
     border-radius: 14px;
   }
@@ -188,13 +207,6 @@
     padding: 6px 12px;
     border-radius: 10px;
     margin-top: 8px;
-  }
-  .highlightRange {
-    background: #ffeaa7;
-    color: #2d3436;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 6px;
   }
   .highlightMarket {
     background: #c8e6c9;
@@ -243,13 +255,13 @@
   <!-- Form -->
   <div class="form-flex">
     <div class="form-group">
-      <label>👤 Your Name</label>
+      <label for="username">👤 Your Name</label>
       <input type="text" id="username" placeholder="Enter your name">
     </div>
 
     <div class="form-group">
-      <label>📍 Enter City</label>
-      <input type="text" id="city" placeholder="Select your city" list="cityList">
+      <label for="city">📍 Enter City</label>
+      <input type="text" id="city" placeholder="Start typing your city..." list="cityList">
       <datalist id="cityList">
         <option value="Surat"></option><option value="Pune (Pimple Gurav)"></option>
         <option value="Pune (Kharadi)"></option><option value="Hyderabad"></option>
@@ -262,7 +274,7 @@
     </div>
 
     <div class="form-group">
-      <label>⚙️ Select Technique</label>
+      <label for="technique">⚙️ Select Technique</label>
       <select id="technique">
         <option value="35">Sapphire FUE</option>
         <option value="30">IMPLANTER FUE</option>
@@ -273,22 +285,22 @@
     </div>
 
     <div class="form-group">
-      <label>💉 Enter Grafts Required</label>
+      <label for="grafts">💉 Enter Grafts Required</label>
       <input type="number" id="grafts" placeholder="e.g. 2000">
     </div>
 
     <div class="form-group">
-      <label>📞 Phone Number</label>
-      <input type="tel" id="phone" placeholder="Enter phone number" required pattern="[0-9]{10}" maxlength="10">
+      <label for="phone">📞 Phone Number (optional)</label>
+      <input type="tel" id="phone" placeholder="Enter phone number (optional)" pattern="[0-9]{10}" maxlength="10">
     </div>
 
     <div class="form-group">
-      <label>✉️ Email Address</label>
-      <input type="email" id="email" placeholder="Enter email">
+      <label for="email">✉️ Email Address (optional)</label>
+      <input type="email" id="email" placeholder="Enter email (optional)">
     </div>
   </div>
 
-  <button id="calculateBtn" onclick="calculateCost()">Calculate 💰</button>
+  <button id="calculateBtn">Calculate 💰</button>
 
   <div id="trustBanner">
     ✅ 14+ Years Experience | 🏥 13 Global Centers<br>
@@ -317,30 +329,27 @@ const gradeData = {
   7: { range: "4500–6000", grafts: 5250, img: "https://hairfreehairgrow.com/wp-content/uploads/2025/03/01-13.webp" }
 };
 
+// Grade selection
 document.querySelectorAll("#gradePreview img").forEach(img => {
-  img.addEventListener("click", function() {
+  img.addEventListener("click", e => {
+    const grade = e.target.dataset.grade;
     document.querySelectorAll("#gradePreview img").forEach(i => i.classList.remove("active"));
-    this.classList.add("active");
-    const grade = this.dataset.grade;
+    e.target.classList.add("active");
     const data = gradeData[grade];
     document.getElementById("grafts").value = data.grafts;
-    document.getElementById("graftRange").innerText = "💡 Suggested Graft Range: " + data.range;
+    document.getElementById("graftRange").innerText = `💡 Suggested Graft Range: ${data.range}`;
     document.getElementById("gradePreview").dataset.selected = grade;
   });
 });
 
-function calculateCost() {
+// Cost calculation
+document.getElementById("calculateBtn").addEventListener("click", () => {
   const name = document.getElementById("username").value.trim();
   const city = document.getElementById("city").value.trim();
   const grafts = parseInt(document.getElementById("grafts").value);
   const rate = parseInt(document.getElementById("technique").value);
-  const phone = document.getElementById("phone").value.trim();
   const grade = document.getElementById("gradePreview").dataset.selected;
 
-  if (!/^[0-9]{10}$/.test(phone)) {
-    alert("📞 Please enter a valid 10-digit phone number.");
-    return;
-  }
   if (!grafts || grafts <= 0) {
     alert("💡 Please enter grafts or select a baldness grade first.");
     return;
@@ -362,14 +371,12 @@ function calculateCost() {
   if (grade) {
     beforeAfter.innerHTML = `<h4>🎯 Before & After Result (Grade ${grade})</h4>
     <img src="${gradeData[grade].img}" alt="Grade ${grade} result">`;
-  } else {
-    beforeAfter.innerHTML = "";
-  }
+  } else beforeAfter.innerHTML = "";
 
   document.getElementById("result").style.display = "block";
   document.getElementById("result").scrollIntoView({ behavior: "smooth" });
   document.getElementById("calculateBtn").innerText = "Recalculate 🔄";
-}
+});
 </script>
 </body>
 </html>
