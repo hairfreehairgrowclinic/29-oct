@@ -40,7 +40,7 @@
     font-size: 1rem;
   }
 
-  /* ---------- GRADE SECTION (moved before inputs) ---------- */
+  /* ---------- GRADE SECTION ---------- */
   #gradeSection {
     text-align: center;
     margin-bottom: 25px;
@@ -180,10 +180,28 @@
     margin-top: 0;
     font-size: 1.4rem;
   }
-  #result p {
-    color: #333;
-    font-size: 15px;
-    margin: 6px 0;
+  #highlightBox {
+    display: inline-block;
+    background: #e3f2ff;
+    color: #003d91;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 10px;
+    margin-top: 8px;
+  }
+  .highlightRange {
+    background: #ffeaa7;
+    color: #2d3436;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 6px;
+  }
+  .highlightMarket {
+    background: #c8e6c9;
+    color: #1b5e20;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 6px;
   }
   #beforeAfter {
     margin-top: 20px;
@@ -207,7 +225,7 @@
   <h2>💇‍♂️ Hair Transplant Cost Calculator – India</h2>
   <p class="sub">Estimate your grafts & cost in seconds 🧮</p>
 
-  <!-- Moved Baldness Grade Section -->
+  <!-- Baldness Grade Section -->
   <div id="gradeSection">
     <h3>🧑‍🦲 Select Your Baldness Grade</h3>
     <div id="gradePreview">
@@ -222,6 +240,7 @@
     <small id="graftRange"></small>
   </div>
 
+  <!-- Form -->
   <div class="form-flex">
     <div class="form-group">
       <label>👤 Your Name</label>
@@ -232,18 +251,12 @@
       <label>📍 Enter City</label>
       <input type="text" id="city" placeholder="Select your city" list="cityList">
       <datalist id="cityList">
-        <option value="Surat"></option>
-        <option value="Pune (Pimple Gurav)"></option>
-        <option value="Pune (Kharadi)"></option>
-        <option value="Hyderabad"></option>
-        <option value="Ahmedabad"></option>
-        <option value="Kolkata"></option>
-        <option value="Bangalore"></option>
-        <option value="Bhopal"></option>
-        <option value="Delhi (Gurugram)"></option>
-        <option value="Nagpur"></option>
-        <option value="Mumbai"></option>
-        <option value="Vapi (Silvassa)"></option>
+        <option value="Surat"></option><option value="Pune (Pimple Gurav)"></option>
+        <option value="Pune (Kharadi)"></option><option value="Hyderabad"></option>
+        <option value="Ahmedabad"></option><option value="Kolkata"></option>
+        <option value="Bangalore"></option><option value="Bhopal"></option>
+        <option value="Delhi (Gurugram)"></option><option value="Nagpur"></option>
+        <option value="Mumbai"></option><option value="Vapi (Silvassa)"></option>
         <option value="Vizag"></option>
       </datalist>
     </div>
@@ -277,7 +290,6 @@
 
   <button id="calculateBtn" onclick="calculateCost()">Calculate 💰</button>
 
-  <!-- TRUST BANNER -->
   <div id="trustBanner">
     ✅ 14+ Years Experience | 🏥 13 Global Centers<br>
     👨‍⚕️ 30+ Expert Doctors | 💯 1,00,000+ Happy Clients | ✂️ 21K+ Surgeries<br>
@@ -285,11 +297,11 @@
   </div>
 
   <div id="result">
-    <h3><span id="greeting"></span> Your Estimated Package: ₹<span id="total"></span></h3>
+    <h3><span id="greeting"></span> Your Estimated Package: <span id="highlightBox">₹<span id="total"></span></span></h3>
     <p><strong>City:</strong> <span id="cityDisplay"></span></p>
     <p><strong>Technique:</strong> <span id="techniqueDisplay"></span></p>
     <p><strong>Baldness Grade:</strong> <span id="gradeDisplay"></span></p>
-    <p><strong>Market Price Comparison:</strong> ₹<span id="marketPriceRange"></span></p>
+    <p><strong>Market Price Comparison:</strong> <span class="highlightMarket">₹<span id="marketPriceRange"></span></span></p>
     <div id="beforeAfter"></div>
   </div>
 </div>
@@ -317,13 +329,6 @@ document.querySelectorAll("#gradePreview img").forEach(img => {
   });
 });
 
-document.querySelectorAll("input, select").forEach(el => {
-  el.addEventListener("input", () => {
-    document.getElementById("result").style.display = "none";
-    document.getElementById("calculateBtn").innerText = "Calculate 💰";
-  });
-});
-
 function calculateCost() {
   const name = document.getElementById("username").value.trim();
   const city = document.getElementById("city").value.trim();
@@ -341,12 +346,13 @@ function calculateCost() {
     return;
   }
 
-  const total = grafts * rate;
-  const minMarket = total - 10000;
-  const maxMarket = total + 40000;
+  const totalMin = grafts * rate * 0.9;
+  const totalMax = grafts * rate * 1.1;
+  const minMarket = Math.round(totalMin - 10000);
+  const maxMarket = Math.round(totalMax + 40000);
 
   document.getElementById("greeting").innerText = name ? `Hi ${name},` : "Hi 👋";
-  document.getElementById("total").innerText = total.toLocaleString();
+  document.getElementById("total").innerText = `${totalMin.toLocaleString()} – ${totalMax.toLocaleString()}`;
   document.getElementById("marketPriceRange").innerText = `${minMarket.toLocaleString()} – ${maxMarket.toLocaleString()}`;
   document.getElementById("techniqueDisplay").innerText = document.getElementById("technique").selectedOptions[0].text;
   document.getElementById("cityDisplay").innerText = city || "—";
@@ -362,12 +368,7 @@ function calculateCost() {
 
   document.getElementById("result").style.display = "block";
   document.getElementById("result").scrollIntoView({ behavior: "smooth" });
-
   document.getElementById("calculateBtn").innerText = "Recalculate 🔄";
-
-  const email = document.getElementById("email").value.trim();
-  const lead = { name, city, phone, email, grade, grafts, rate, total };
-  console.log("Lead Sent to CRM:", lead);
 }
 </script>
 </body>
