@@ -111,6 +111,11 @@
     margin-bottom: 6px;
   }
 
+  label.required::after {
+    content: " *";
+    color: red;
+  }
+
   input, select {
     width: 100%;
     padding: 10px 12px;
@@ -165,6 +170,7 @@
       position: sticky;
       bottom: 10px;
       z-index: 100;
+      box-shadow: 0 4px 14px rgba(20,44,92,0.25);
     }
   }
 
@@ -187,7 +193,7 @@
   #result {
     margin-top: 40px;
     display: none;
-    animation: fadeIn 0.6s ease;
+    animation: fadeInSmooth 0.8s ease;
     text-align: center;
     background: #eaf3ff;
     border: 1px solid #cde0ff;
@@ -225,8 +231,8 @@
     box-shadow: 0 6px 16px rgba(0,0,0,0.15);
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
+  @keyframes fadeInSmooth {
+    from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
   }
 </style>
@@ -290,12 +296,12 @@
     </div>
 
     <div class="form-group">
-      <label for="phone">📞 Phone Number (optional)</label>
-      <input type="tel" id="phone" placeholder="Enter phone number (optional)" pattern="[0-9]{10}" maxlength="10">
+      <label for="phone" class="required">📞 Phone Number</label>
+      <input type="tel" id="phone" placeholder="Enter phone number" maxlength="10">
     </div>
 
     <div class="form-group">
-      <label for="email">✉️ Email Address (optional)</label>
+      <label for="email">✉️ Email Address</label>
       <input type="email" id="email" placeholder="Enter email (optional)">
     </div>
   </div>
@@ -339,8 +345,14 @@ document.querySelectorAll("#gradePreview img").forEach(img => {
     document.getElementById("grafts").value = data.grafts;
     document.getElementById("graftRange").innerText = `💡 Suggested Graft Range: ${data.range}`;
     document.getElementById("gradePreview").dataset.selected = grade;
+
+    // Scroll to graft input
+    document.getElementById("grafts").scrollIntoView({ behavior: "smooth", block: "center" });
   });
 });
+
+// Auto-highlight graft input
+document.getElementById("grafts").addEventListener("focus", e => e.target.select());
 
 // Cost calculation
 document.getElementById("calculateBtn").addEventListener("click", () => {
@@ -349,6 +361,17 @@ document.getElementById("calculateBtn").addEventListener("click", () => {
   const grafts = parseInt(document.getElementById("grafts").value);
   const rate = parseInt(document.getElementById("technique").value);
   const grade = document.getElementById("gradePreview").dataset.selected;
+  const phone = document.getElementById("phone").value.trim();
+
+  // Mandatory phone validation
+  if (!phone) {
+    alert("📞 Please enter your phone number (required).");
+    return;
+  }
+  if (!/^[6-9]\d{9}$/.test(phone)) {
+    alert("⚠️ Please enter a valid 10-digit Indian phone number.");
+    return;
+  }
 
   if (!grafts || grafts <= 0) {
     alert("💡 Please enter grafts or select a baldness grade first.");
@@ -373,8 +396,9 @@ document.getElementById("calculateBtn").addEventListener("click", () => {
     <img src="${gradeData[grade].img}" alt="Grade ${grade} result">`;
   } else beforeAfter.innerHTML = "";
 
-  document.getElementById("result").style.display = "block";
-  document.getElementById("result").scrollIntoView({ behavior: "smooth" });
+  const resultBox = document.getElementById("result");
+  resultBox.style.display = "block";
+  resultBox.scrollIntoView({ behavior: "smooth" });
   document.getElementById("calculateBtn").innerText = "Recalculate 🔄";
 });
 </script>
